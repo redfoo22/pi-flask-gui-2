@@ -1,0 +1,381 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+
+  <title>PyDoor-GuiFoo</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.sound.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" crossorigin="anonymous"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.sound.min.js">
+  </script> 
+
+</head>
+
+<body>
+ 
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.3/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.dom.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.9.0/addons/p5.sound.min.js">
+  </script> -->
+    <script>
+        //Globals
+        let logText = ""
+        console.log(io)
+        let socket = io.connect('https://192.168.86.38:82')
+            // socket.on('connect', function() {
+            // // console.log('from connect')
+           
+            // socket.send('User has connected!');
+            // });
+            // socket.on('log', (data) => {
+            // // console.log("from log",data)
+            // logText = data
+            // });
+
+        //Gobals
+       
+        let aspecRatio
+        let shutDownBtn
+
+        //Event Vars
+        let mousePressedEvent
+
+        function setup() {
+            createCanvas(windowWidth,windowHeight)
+            
+            aspecRatio = xMap(100)/yMap(100)
+            background(0)
+        
+            //test stuff
+            
+            //create Elements
+            shutDownBtn = Element("shutDownBtn","rectangle",75,0,25,12.5)
+            textBoxBg = Element("textBoxBg","rectangle",0,0,75,12.5)
+            logWindow = Element("logWindow","rectangle",0,50,100,50)
+            upBtn = Element("upBtn","rectangle",75,37.5,25,12.5)
+            downBtn = Element("downBtn","rectangle",0,37.5,25,12.5)
+            
+
+            //Labels
+            shutDownBtnLabel =Element("shutDownBtn","label",50-12.5,50-6.25,25,12.5).labelText("X").fill('black')
+            pydoorLabel = Element("shutDownBtn","label",0,0,0,0).labelText("Py_Door").fill('aqua')
+            logWindowLabel = Element("logWindowLabel","label",0,0,0,0).labelText("Log").fill(50,50,100)
+            logWindowText=Element("logWindowText","label",0,0,0,0).labelText("from py....im the guy...just chlillen with million...cause that what i'm fellin....my gremlin").fill(50,50,100) 
+            //create sub funcs
+            // shutDownBtn.onPress().motorDown = ()=>{
+            //     $print("emit moterDown or Pi")
+            // }
+            //Create Events
+            mousePressedEvent = Event("hello")
+         //subcriptions
+            mousePressedEvent.subscribe(shutDownBtn.onPress)
+            mousePressedEvent.subscribe(upBtn.onPress)
+            mousePressedEvent.subscribe(downBtn.onPress)
+            mousePressedEvent.subscribe(textBoxBg.onPress)
+            
+        }
+
+        //props
+        let fooFrame = 0
+        
+        //DRAW
+        function draw() {
+            
+            background(0)
+            fooFrame ++    
+            shutDownBtn.fill("red").show().stroke("grey").strokeWeight(1).noStroke(true)
+            upBtn.fill("green").show().stroke("grey").strokeWeight(1)
+            downBtn.fill("orange").show().stroke("grey").strokeWeight(1)
+            textBoxBg.fill('yellow').show()
+            logWindow.fill('white').show().stroke("black").strokeWeight(10)
+        
+            shutDownBtnLabel.show().setX(shutDownBtn.x+(shutDownBtn.w/2)-.2).setY(shutDownBtn.y+(shutDownBtn.h/2)+.7).textSize(18).stroke("orange").strokeWeight(3)
+
+            pydoorLabel.show().textSize(10).setX(textBoxBg.x+(textBoxBg.w/2)-.2).setY(textBoxBg.y+(textBoxBg.h/2)+.7).textSize(18).stroke("purple").strokeWeight(3)
+
+            logWindowLabel.show().textSize(10).setX(logWindow.x+(logWindow.w/2)-.2).setY(logWindow.y+5.2).textSize(10).stroke("black").strokeWeight(1).fill("white")
+
+            logWindowText.textAlign(false).show().labelText(logText).textSize(3).setX(logWindow.x+10).setY(logWindow.y+11).fill("black").bind("log")
+            
+            // fill("white")
+            // textSize(xMap(15))
+            // text('Py_Doggy',xMap(textBoxBg.x),yMap(textBoxBg.y),xMap(textBoxBg.w),yMap(textBoxBg.h))
+            
+        }
+        //END OF DRAW
+
+        //Helpers
+        let data = ()=> {
+            return null
+        }
+        //For Coordinates
+        function xMap(value){
+                return map(value,0,100,0,width,true) 
+            
+            }
+        function yMap(value){
+                return map(value,0,100,0,height,true)
+         
+            }
+        //for mouse stuff
+        function mXmap(value) {
+            return map(value,0,width,0,100,true)
+        }
+        function mYmap(value) {
+            return map(value,0,height,0,100,true)
+        }
+
+        function $print(value) {
+           return console.log(value)
+        }
+        //factories
+    // Elements Object
+    
+        function Elements() {
+            self = {
+                elementsArr: [],
+                addElement:(element)=>{
+                    elementsArr.push(element)
+                    return self
+                }
+
+                }
+            }
+        
+    //FooBrary
+        function Element(name,type,x,y,w,h) {
+            //default Prop
+            let data = ()=> {
+                return null
+            }
+            //unMutable Object
+            const self = {
+                //props
+                name:name,
+                type:type,
+                x:x,
+                y:y,
+                w:w,
+                h:h,
+                elementIsHit:false,
+                $stroke:0,
+                $strokeWeight:0,
+                $fill:null,
+                $noStroke:false,
+                $labelText:"TEST",
+                $textSize:1,
+                $textAlign:true,
+
+                fill:(color)=>{
+                    self.$fill = color
+                    return self
+                },
+                
+                show:()=>{
+                    push()
+                    if (self.$textAlign == true) {
+                        textAlign(CENTER, CENTER);
+                    }
+                    
+                    stroke(self.$stroke)
+                    strokeWeight(xMap(self.$strokeWeight))
+                    if(self.$noStroke == true){
+                        noStroke()
+                    }
+                    fill(self.$fill)
+                    textSize(xMap(self.$textSize))
+                    if (self.type == "rectangle"){
+                    rect(xMap(self.x),yMap(self.y),xMap(self.w),yMap(self.h))
+                    } 
+                    if (self.type == "ellipse") {
+                        ellipse(xmap(x),yMap(y),xMap(w),yMap(h))
+                    }
+                    if (self.type == "label") {
+                        text(self.$labelText,xMap(self.x),yMap(self.y))
+                    }
+                    
+                    pop()
+                    return self
+                    },
+                    labelText:(value)=>{
+                        self.$labelText=value
+                        return self
+                    },
+                    textAlign:(value)=>{
+                        self.$textAlign = value
+                        return self
+                    },
+                    textSize:(value)=>{
+                        self.$textSize = value
+                        return self
+                    },
+                    paddingX: (value)=>{
+                    self.x =self.x+value
+                    return self
+                    },
+                    aspecRatio: (coord)=>{
+                    if (coord == "y") {
+                        self.y = self.y * aspecRatio
+                        
+                    }
+                    return self
+                    },
+                    paddingY: (value)=>{
+                    self.y =self.y+value
+                    return self
+                    },
+                    setX:(val)=>{
+                    self.x=val
+                    return self
+
+                    },
+                    setY:(val)=>{
+                    self.y=val
+                    return self
+
+                    },
+                    noStroke:(value)=>{
+                        self.$noStroke =value
+                        return self
+                    
+                    },
+                    stroke:(color)=>{
+                    self.$stroke = color
+                    return self
+                    },
+                    strokeWeight:(value)=>{
+                    self.$strokeWeight = value
+                    return self
+
+                    },
+                    hit:(data)=>{
+                    if (data().mX >self.x && data().mX < self.x + self.w && data().mY > self.y && data().mY < self.y + self.h) {
+                        self.elementIsHit = true
+                        console.log('Hit Detected on ',self.name)
+                    }
+
+                    return self
+                    },
+                    onPress:(data)=> {
+                    self.hit(data)
+                    if(self.elementIsHit==true) {
+                        console.log("send",data(),"to",self.name,"control on pi")
+                        socket.emit(self.name,data())     
+                    }
+                    self.elementIsHit = false
+                    
+                    },
+                    //control is name of control on device
+                    bind:(control)=>{
+                    socket.on(control, data => {
+                        
+                        if (data != undefined) {
+                            logText = data
+                            // $print(data)
+                        }
+                        
+                    });
+                    return self
+                }
+                
+
+            }
+                
+                return self
+       }
+
+        //Factories
+    let Event = (source) => {
+        source = source
+    
+        let fn = () => {
+            return null
+        }
+        let data = () => {
+            return null
+        }
+        let setSource = (value) => {
+            source = value
+        }
+        let subscribers = []
+
+        let subscribe = (fn => {
+            subscribers.push(fn)
+            console.log(fn,"has subscribed")
+        })
+        let unSubscribe = (fnToRemove => {
+            subscribers = subscribers.filter(fn => {
+                if (fn != fnToRemove) {
+                return fn
+            }
+            console.log("A FUNCTION HAS BEEN UNSUBBED ")
+            })
+        })
+
+        let input = () => {
+            return source
+        }
+        let output = ()=> {
+            return input()
+        }
+        let broadcast = () =>{
+            subscribers.forEach(fn =>{
+            fn(output)    
+            }) 
+        }
+        return {source,input,subscribe,unSubscribe,broadcast,output,subscribers,setSource}  
+    } 
+        
+    
+    //Subcriber functions
+    
+    let showLog = () => {
+        push()
+        fill("white")
+        textSize(width/5 *(height/width)/5);
+        textAlign(CENTER)
+        if (logText) {
+            text(logText, width/2, height*.40)
+        }
+        
+        
+        pop()
+        
+    }
+    function mousePressed(e){
+        mousePressedEvent.setSource({mX:mXmap(e.x),mY:mYmap(e.y)})
+        mousePressedEvent.broadcast()
+
+        // console.log("mouse pressed")
+        // socket.emit('doorLog',"doorLog pressed")  
+    }
+    function touchStarted(e){
+        mousePressedEvent.setSource({mX:mXmap(e.x),mY:mYmap(e.y)})
+        mousePressedEvent.broadcast()
+
+        // console.log("mouse pressed")
+        // socket.emit('doorLog',"doorLog pressed")  
+    }
+
+    </script>
+    <!-- <script  src="guiFoo.js"></script> -->
+
+  <!-- <script  src="data.js"></script>
+  <script  src="dispatcher.js"></script>
+  <script  src="autoCorl.js"></script>
+  <script  src="helpers.js"></script> -->
+  
+  
+</body>
+
+</html>
+
+
+
+
+
+
