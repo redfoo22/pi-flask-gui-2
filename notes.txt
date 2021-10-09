@@ -1,0 +1,3 @@
+to run must be sudo
+sudo ./bin/python app.py
+
